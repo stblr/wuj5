@@ -38,7 +38,8 @@ base_fields = [
 
 lyt1_fields = [
     *base_fields,
-    Field('bool32', 'centered'),
+    Field('bool8', 'centered'),
+    Field('pad24', None),
     Field('f32', 'size x'),
     Field('f32', 'size y'),
 ]
