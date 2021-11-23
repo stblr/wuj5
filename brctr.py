@@ -71,7 +71,7 @@ brctr_pack = {
 }
 
 
-animation_fields = [
+group_fields = [
     Field('array', 'groups', fields = [
         Field('string', 'name'),
         Field('string', 'pane'),
@@ -87,7 +87,7 @@ animation_fields = [
     ]),
 ]
 
-layout_fields = [
+variant_fields = [
     Field('array', 'variants', fields = [
         Field('string', 'name'),
         Field('u16', 'opacity'),
@@ -122,17 +122,17 @@ layout_fields = [
 
 def unpack_brctr(in_data):
     strings_offset = unpack_u16(in_data, 0x10)
-    animation_offset = unpack_u16(in_data, 0x0c)
-    layout_offset = unpack_u16(in_data, 0x0e)
+    group_offset = unpack_u16(in_data, 0x0c)
+    variant_offset = unpack_u16(in_data, 0x0e)
 
     return {
         'main brlyt': unpack_string(in_data, 0x06, strings_offset = strings_offset),
         'bmg': unpack_string(in_data, 0x08, strings_offset = strings_offset), 
         'picture source brlyt': unpack_string(in_data, 0x0a, strings_offset = strings_offset),
-        **unpack_struct(in_data, animation_offset, size = brctr_size, unpack = brctr_unpack,
-                        fields = animation_fields, strings_offset = strings_offset),
-        **unpack_struct(in_data, layout_offset, size = brctr_size, unpack = brctr_unpack,
-                        fields = layout_fields, strings_offset = strings_offset),
+        **unpack_struct(in_data, group_offset, size = brctr_size, unpack = brctr_unpack,
+                        fields = group_fields, strings_offset = strings_offset),
+        **unpack_struct(in_data, variant_offset, size = brctr_size, unpack = brctr_unpack,
+                        fields = variant_fields, strings_offset = strings_offset),
     }
 
 def pack_brctr(val):
@@ -145,24 +145,24 @@ def pack_brctr(val):
         pack_string(val['picture source brlyt'], strings = strings),
     ])
 
-    animation_val = { field.name: val[field.name] for field in animation_fields }
-    buffer = Buffer(sum(brctr_size[field.kind] for field in animation_fields))
-    animation_data = pack_struct(animation_val, size = brctr_size, pack = brctr_pack,
-                                 fields = animation_fields, buffer = buffer, strings = strings)
-    animation_data += buffer.buffer
+    group_val = { field.name: val[field.name] for field in group_fields }
+    buffer = Buffer(sum(brctr_size[field.kind] for field in group_fields))
+    group_data = pack_struct(group_val, size = brctr_size, pack = brctr_pack,
+                                 fields = group_fields, buffer = buffer, strings = strings)
+    group_data += buffer.buffer
 
-    buffer = Buffer(sum(brctr_size[field.kind] for field in layout_fields))
-    layout_val = { field.name: val[field.name] for field in layout_fields }
-    layout_data = pack_struct(layout_val, size = brctr_size, pack = brctr_pack,
-                              fields = layout_fields, buffer = buffer, strings = strings)
-    layout_data += buffer.buffer
+    buffer = Buffer(sum(brctr_size[field.kind] for field in variant_fields))
+    variant_val = { field.name: val[field.name] for field in variant_fields }
+    variant_data = pack_struct(variant_val, size = brctr_size, pack = brctr_pack,
+                              fields = variant_fields, buffer = buffer, strings = strings)
+    variant_data += buffer.buffer
 
     offset = 0x14
     header_data += pack_u16(offset)
-    offset += len(animation_data)
+    offset += len(group_data)
     header_data += pack_u16(offset)
-    offset += len(layout_data)
+    offset += len(variant_data)
     header_data += pack_u16(offset)
     header_data += pack_pad16(None)
 
-    return header_data + animation_data + layout_data + strings.buffer
+    return header_data + group_data + variant_data + strings.buffer
