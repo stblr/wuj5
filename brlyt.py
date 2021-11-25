@@ -97,6 +97,10 @@ txt1_fields = [
     *pan1_fields,
 ]
 
+wnd1_fields = [
+    *pan1_fields,
+]
+
 grp1_fields = [
     *base_fields,
     Field('string128', 'name'),
@@ -131,6 +135,7 @@ def unpack_sections(in_data, offset, parent_magic):
             'pic1': pic1_fields,
             'bnd1': bnd1_fields,
             'txt1': txt1_fields,
+            'wnd1': wnd1_fields,
             'grp1': grp1_fields,
             'grs1': grs1_fields,
             'gre1': gre1_fields,
