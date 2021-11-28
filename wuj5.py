@@ -6,7 +6,7 @@ import json5
 import os
 
 from brctr import unpack_brctr, pack_brctr
-from brlyt import unpack_brlyt
+from brlyt import unpack_brlyt, pack_brlyt
 
 
 def decode(in_path):
@@ -29,6 +29,7 @@ def encode(in_path):
     ext = in_path.split(os.extsep)[-2]
     pack = {
         'brctr': pack_brctr,
+        'brlyt': pack_brlyt,
     }.get(ext)
     if pack is None:
         exit(f'Unknown file format with binary extension {ext}.')

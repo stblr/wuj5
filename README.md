@@ -7,7 +7,7 @@ Convert Wii UI formats to JSON5 and vice versa.
 | Format | Read | Write | Check |
 | :----- | :--- | :---- | :---- |
 | BRCTR  | Yes  | Yes   |       |
-| BRLYT  | WIP  |       |       |
+| BRLYT  | WIP  | WIP   |       |
 
 ## How to use
 

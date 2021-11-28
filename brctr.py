@@ -1,17 +1,6 @@
 from common import *
 
 
-class Buffer:
-    def __init__(self, offset):
-        self.buffer = b''
-        self.offset = offset
-
-    def size(self):
-        return self.offset + len(self.buffer)
-
-    def push(self, data):
-        self.buffer += data
-
 class Strings:
     def __init__(self):
         self.buffer = b'\0'
