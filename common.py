@@ -76,13 +76,12 @@ def unpack_bitfield8(in_data, offset, **kwargs):
 
 def unpack_enum(in_data, offset, kind, **kwargs):
     unpack = kwargs['unpack']
-    field = kwargs['field']
     variants = kwargs['variants']
     val = unpack[kind](in_data, offset)
     variant = next((variant for variant in variants if variant.val == val), None)
     if variant is None:
         vals = [variant.val for variant in variants]
-        exit(f'Unknown variant with value {val} for enum "{field.name}" (expected one of {vals}).')
+        exit(f'Unknown enum variant with value {val} (expected one of {vals}).')
     return variant.name
 
 def unpack_enum8(in_data, offset, **kwargs):
@@ -153,12 +152,12 @@ def pack_bitfield8(val, **kwargs):
     return pack_bitfield(val, 'u8', **kwargs)
 
 def pack_enum(name, kind, **kwargs):
-    field = kwargs['field']
+    pack = kwargs['pack']
     variants = kwargs['variants']
     variant = next((variant for variant in variants if variant.name == name), None)
     if variant is None:
         names = [variant.name for variant in variants]
-        exit(f'Unknown variant with name {name} for enum "{field.name}" (expected one of {names}).')
+        exit(f'Unknown enum variant with name {name} (expected one of {names}).')
     return pack[kind](variant.val)
 
 def pack_enum8(val, **kwargs):

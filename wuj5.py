@@ -6,6 +6,7 @@ import json5
 import os
 
 from brctr import unpack_brctr, pack_brctr
+from brlan import unpack_brlan, pack_brlan
 from brlyt import unpack_brlyt, pack_brlyt
 
 
@@ -15,6 +16,7 @@ def decode(in_path):
     magic = in_data[0:4]
     unpack = {
         b'bctr': unpack_brctr,
+        b'RLAN': unpack_brlan,
         b'RLYT': unpack_brlyt,
     }.get(magic)
     if unpack is None:
@@ -29,6 +31,7 @@ def encode(in_path):
     ext = in_path.split(os.extsep)[-2]
     pack = {
         'brctr': pack_brctr,
+        'brlan': pack_brlan,
         'brlyt': pack_brlyt,
     }.get(ext)
     if pack is None:
