@@ -153,6 +153,7 @@ def pack_bitfield8(val, **kwargs):
     return pack_bitfield(val, 'u8', **kwargs)
 
 def pack_enum(name, kind, **kwargs):
+    field = kwargs['field']
     variants = kwargs['variants']
     variant = next((variant for variant in variants if variant.name == name), None)
     if variant is None:
