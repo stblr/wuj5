@@ -109,7 +109,7 @@ def pack_array(vals, kind, **kwargs):
         pack[kind](len(vals)),
         b'\x00' * size[kind],
     ])
-    buffer_offset = sum(size[field.kind] for field in fields)
+    buffer_offset = len(vals) * sum(size[field.kind] for field in fields)
     buffer = Buffer(buffer_offset)
     kwargs = {
         **kwargs,
