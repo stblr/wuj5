@@ -246,8 +246,9 @@ def unpack_brlan(in_data):
 
 def pack_pat1(val):
     name_data = val['name'].encode('ascii') + b'\0'
+    name_data = name_data.ljust((len(name_data) + 0x3) & ~0x3, b'\0')
 
-    groups_offset = ((0x1c + len(name_data) + 0x3) & ~0x3) + 0x14 * len(val['groups'])
+    groups_offset = 0x1c + len(name_data)
     groups_data = b''
     for group in val['groups']:
         groups_data += group['name'].encode('ascii').ljust(0x14, b'\0')
@@ -263,7 +264,7 @@ def pack_pat1(val):
         pack_s16(val['end frame']),
         pack_bool8(val['descending bind']),
         pack_pad24(None),
-        val['name'].encode('ascii') + b'\0',
+        name_data,
         groups_data,
     ])
 
@@ -385,7 +386,7 @@ def pack_sections(sections):
             'pat1': pack_pat1,
             'pai1': pack_pai1,
         }[section['magic']](section)
-        section_data = section_data.ljust((len(section_data) + 0x3) & ~0x3, b'\x00')
+        section_data = section_data.ljust((len(section_data) + 0x3) & ~0x3, b'\0')
         section_data = section_data[0x0:0x4] + pack_u32(len(section_data)) + section_data[0x8:]
         out_data += section_data
     return out_data
