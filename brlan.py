@@ -1,29 +1,6 @@
 from common import *
 
 
-def unpack_pat1(in_data, offset):
-    name_offset = offset + unpack_u32(in_data, offset + 0x0c)
-    name = in_data[name_offset:].split(b'\0')[0].decode('ascii')
-
-    group_count = unpack_u16(in_data, offset + 0x0a)
-    groups_offset = unpack_u32(in_data, offset + 0x10)
-    groups = []
-    for i in range(group_count):
-        group_offset = offset + groups_offset + i * 0x14
-        groups += [{
-            'name': in_data[group_offset:group_offset + 0x10].decode('ascii').rstrip('\0')
-        }]
-
-    return {
-        'magic': unpack_magic(in_data, offset + 0x00),
-        'id': unpack_u16(in_data, offset + 0x08),
-        'groups': groups,
-        'name': name,
-        'start frame': unpack_s16(in_data, offset + 0x14),
-        'end frame': unpack_s16(in_data, offset + 0x16),
-        'descending bind': unpack_bool8(in_data, offset + 0x18),
-    }
-
 target_kind_variants = {
     'RLMC': [
         Variant('material color r', 0x00),
@@ -116,6 +93,29 @@ content_kind_variants = [
     Variant('pane', 0x0),
     Variant('material', 0x1),
 ]
+
+def unpack_pat1(in_data, offset):
+    name_offset = offset + unpack_u32(in_data, offset + 0x0c)
+    name = in_data[name_offset:].split(b'\0')[0].decode('ascii')
+
+    group_count = unpack_u16(in_data, offset + 0x0a)
+    groups_offset = unpack_u32(in_data, offset + 0x10)
+    groups = []
+    for i in range(group_count):
+        group_offset = offset + groups_offset + i * 0x14
+        groups += [{
+            'name': in_data[group_offset:group_offset + 0x10].decode('ascii').rstrip('\0')
+        }]
+
+    return {
+        'magic': unpack_magic(in_data, offset + 0x00),
+        'id': unpack_u16(in_data, offset + 0x08),
+        'groups': groups,
+        'name': name,
+        'start frame': unpack_s16(in_data, offset + 0x14),
+        'end frame': unpack_s16(in_data, offset + 0x16),
+        'descending bind': unpack_bool8(in_data, offset + 0x18),
+    }
 
 def unpack_step_key(in_data, offset):
     return {
