@@ -111,7 +111,7 @@ def unpack_brctr(in_data):
     }
 
 def pack_brctr(val):
-    strings = Strings('ascii', '\0')
+    strings = Strings('ascii', b'\0')
 
     header_data = b''.join([
         b'bctr\x00\x02',
