@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 import json5
 import os
 
+from bmg import unpack_bmg, pack_bmg
 from brctr import unpack_brctr, pack_brctr
 from brlan import unpack_brlan, pack_brlan
 from brlyt import unpack_brlyt, pack_brlyt
@@ -15,6 +16,7 @@ def decode(in_path):
     in_data = in_file.read()
     magic = in_data[0:4]
     unpack = {
+        b'MESG': unpack_bmg,
         b'bctr': unpack_brctr,
         b'RLAN': unpack_brlan,
         b'RLYT': unpack_brlyt,
@@ -30,6 +32,7 @@ def decode(in_path):
 def encode(in_path):
     ext = in_path.split(os.extsep)[-2]
     pack = {
+        'bmg': pack_bmg,
         'brctr': pack_brctr,
         'brlan': pack_brlan,
         'brlyt': pack_brlyt,

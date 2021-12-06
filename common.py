@@ -237,3 +237,19 @@ class Buffer:
 
     def push(self, data):
         self.buffer += data
+
+class Strings:
+    def __init__(self, encoding, terminator):
+        self.encoding = encoding
+        self.terminator = terminator
+        self.buffer = terminator
+        self.offsets = { '': 0 }
+
+    def insert(self, string):
+        if string in self.offsets:
+            return self.offsets[string]
+
+        offset = len(self.buffer)
+        self.offsets[string] = offset
+        self.buffer += string.encode(self.encoding) + self.terminator
+        return offset

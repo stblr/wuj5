@@ -1,20 +1,6 @@
 from common import *
 
 
-class Strings:
-    def __init__(self):
-        self.buffer = b'\0'
-        self.offsets = { '': 0 }
-
-    def insert(self, string):
-        if string in self.offsets:
-            return self.offsets[string]
-
-        offset = len(self.buffer)
-        self.offsets[string] = offset
-        self.buffer += string.encode('ascii') + b'\0'
-        return offset
-
 def unpack_string(in_data, offset, **kwargs):
     strings_offset = kwargs['strings_offset']
     offset = strings_offset + unpack_u16(in_data, offset)
@@ -125,7 +111,7 @@ def unpack_brctr(in_data):
     }
 
 def pack_brctr(val):
-    strings = Strings()
+    strings = Strings('ascii', '\0')
 
     header_data = b''.join([
         b'bctr\x00\x02',

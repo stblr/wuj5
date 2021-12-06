@@ -4,11 +4,14 @@ Convert Wii UI formats to JSON5 and vice versa.
 
 ## Supported formats
 
-| Format | Read | Write | Check |
-| :----- | :--- | :---- | :---- |
-| BRCTR  | Yes  | Yes   |       |
-| BRLAN  | Yes  | Yes   |       |
-| BRLYT  | WIP  | WIP   |       |
+| Format  | Read | Write | Check |
+| :------ | :--- | :---- | :---- |
+| BMG[^1] | WIP  | WIP   |       |
+| BRCTR   | Yes  | Yes   |       |
+| BRLAN   | Yes  | Yes   |       |
+| BRLYT   | WIP  | WIP   |       |
+
+[^1]: Mario Kart Wii only.
 
 ## How to use
 
