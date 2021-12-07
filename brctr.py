@@ -114,7 +114,8 @@ def pack_brctr(val):
     strings = Strings('ascii', b'\0')
 
     header_data = b''.join([
-        b'bctr\x00\x02',
+        pack_magic('bctr'),
+        pack_u16(2),
         pack_string(val['main brlyt'], strings = strings),
         pack_string(val['bmg'], strings = strings),
         pack_string(val['picture source brlyt'], strings = strings),
