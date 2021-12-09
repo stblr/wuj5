@@ -488,7 +488,6 @@ def unpack_sections(in_data, offset, parent_magic):
     last_section = None
     while offset < len(in_data):
         magic = unpack_magic(in_data, offset + 0x00)
-        section_size = unpack_u32(in_data, offset + 0x04)
         kwargs = {
             'size': brlyt_size,
             'unpack': brlyt_unpack,
@@ -497,8 +496,8 @@ def unpack_sections(in_data, offset, parent_magic):
             'voffset': offset,
         }
         section = unpack_struct(in_data, offset, **kwargs)
+        offset += section['size']
         del section['size']
-        offset += section_size
         if magic == 'pas1' or magic == 'grs1':
             expected_last_magic = {
                 'pas1': 'pan1',
