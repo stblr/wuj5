@@ -208,7 +208,7 @@ def unpack_pai1(in_data, offset):
     tpls = []
     for i in range(tpl_count):
         tpl_offset = offset + 0x14 + unpack_u32(in_data, offset + 0x14 + i * 0x4)
-        tpls += [in_data[name_offset:].split(b'\0')[0].decode('ascii')]
+        tpls += [in_data[tpl_offset:].split(b'\0')[0].decode('ascii')]
 
     content_count = unpack_u16(in_data, offset + 0x0e)
     contents_offset = unpack_u32(in_data, offset + 0x10)
@@ -351,11 +351,18 @@ def pack_content(val):
     ])
 
 def pack_pai1(val):
+    tpl_offset = 0x4 * len(val['tpls'])
+    tpl_offsets_data = b''
     tpls_data = b''
     for tpl in val['tpls']:
-        tpls_data += tpl.encode('ascii').ljust(0x14, b'\0')
+        tpl_offsets_data += pack_u32(tpl_offset)
+        tpl_data = tpl.encode('ascii') + b'\0'
+        tpls_data += tpl_data
+        tpl_offset += len(tpl_data)
+    tpls_data = tpl_offsets_data + tpls_data
+    tpls_data = tpls_data.ljust((len(tpls_data) + 0x3) & ~0x3, b'\0')
 
-    contents_offset = 0x14 + 0x4 * len(val['tpls'])
+    contents_offset = 0x14 + len(tpls_data)
     content_offset = contents_offset + 0x4 * len(val['contents'])
     content_offsets_data = b''
     contents_data = b''
