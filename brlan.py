@@ -336,7 +336,7 @@ def pack_content(val):
         animation_data = pack_animation(animation)
         animations_data += animation_data
         animation_offset += len(animation_data)
-    animation_data = animation_offsets_data + animations_data
+    animations_data = animation_offsets_data + animations_data
 
     return b''.join([
         val['name'].encode('ascii').ljust(0x14, b'\0'),
@@ -347,7 +347,7 @@ def pack_content(val):
             variants = content_kind_variants,
         ),
         pack_pad16(None),
-        animation_data,
+        animations_data,
     ])
 
 def pack_pai1(val):
