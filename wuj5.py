@@ -12,17 +12,28 @@ from brlyt import unpack_brlyt, pack_brlyt
 
 
 def decode(in_path):
+    ext = in_path.split(os.extsep)[-1]
+    unpack = {
+        'bmg': unpack_bmg,
+        'brctr': unpack_brctr,
+        'brlan': unpack_brlan,
+        'brlyt': unpack_brlyt,
+    }.get(ext)
+    if unpack is None:
+        exit(f'Unknown file format with extension {ext}.')
     in_file = open(in_path, 'rb')
     in_data = in_file.read()
     magic = in_data[0:4]
-    unpack = {
-        b'MESG': unpack_bmg,
-        b'bctr': unpack_brctr,
-        b'RLAN': unpack_brlan,
-        b'RLYT': unpack_brlyt,
-    }.get(magic)
-    if unpack is None:
-        exit(f'Unknown file format with magic {magic}.')
+    expected_magic = {
+        'bmg': b'MESG',
+        'brctr': b'bctr',
+        'brlan': b'RLAN',
+        'brlyt': b'RLYT',
+    }[ext]
+    if magic != expected_magic:
+        magic = magic.decode('ascii')
+        expected_magic = expected_magic.decode('ascii')
+        exit(f'Unexpected magic {magic} for extension {ext} (expected {expected_magic}).')
     val = unpack(in_data)
     out_data = json5.dumps(val, indent = 4, quote_keys = True)
     out_path = in_path + '.json5'
