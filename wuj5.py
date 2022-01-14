@@ -87,7 +87,7 @@ def decode(in_path, out_path, retained):
         expected_magic = expected_magic.decode('ascii')
         exit(f'Unexpected magic {magic} for extension {ext} (expected {expected_magic}).')
     val = unpack(in_data)
-    out_data = json5.dumps(val, indent = 4, quote_keys = True)
+    out_data = json5.dumps(val, ensure_ascii = False, indent = 4, quote_keys = True)
     if out_path is None:
         out_path = in_path + '.json5'
     out_file = open(out_path, 'w')
