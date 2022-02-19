@@ -4,6 +4,7 @@
 from argparse import ArgumentParser
 import json5
 import os
+import sys
 
 from bmg import unpack_bmg, pack_bmg
 from brctr import unpack_brctr, pack_brctr
@@ -67,7 +68,7 @@ def decode_szs(in_path, out_path, retained, renamed):
     if magic != expected_magic:
         magic = magic.decode('ascii')
         expected_magic = expected_magic.decode('ascii')
-        exit(f'Unexpected magic {magic} for extension {ext} (expected {expected_magic}).')
+        sys.exit(f'Unexpected magic {magic} for extension {ext} (expected {expected_magic}).')
     in_data = unpack_yaz(in_data)
     root = unpack_u8(in_data)
     if out_path is None:
@@ -81,7 +82,7 @@ def decode(in_path, out_path, retained, renamed):
         return
     unpack = ext_unpack.get(ext)
     if unpack is None:
-        exit(f'Unknown file format with extension {ext}.')
+        sys.exit(f'Unknown file format with extension {ext}.')
     with open(in_path, 'rb') as in_file:
         in_data = in_file.read()
     magic = in_data[0:4]
@@ -89,7 +90,7 @@ def decode(in_path, out_path, retained, renamed):
     if magic != expected_magic:
         magic = magic.decode('ascii')
         expected_magic = expected_magic.decode('ascii')
-        exit(f'Unexpected magic {magic} for extension {ext} (expected {expected_magic}).')
+        sys.exit(f'Unexpected magic {magic} for extension {ext} (expected {expected_magic}).')
     val = unpack(in_data)
     out_data = json5.dumps(val, ensure_ascii = False, indent = 4, quote_keys = True)
     if out_path is None:
@@ -153,7 +154,7 @@ def encode(in_path, out_path, retained, renamed):
         return
     pack = ext_pack.get(ext)
     if pack is None:
-        exit(f'Unknown file format with binary extension {ext}.')
+        sys.exit(f'Unknown file format with binary extension {ext}.')
     with open(in_path, 'r', encoding='utf-8') as in_file:
         in_data = in_file.read()
     val = json5.loads(in_data)
@@ -179,7 +180,7 @@ operations = {
 if args.outputs is None:
     args.outputs = [None] * len(args.inputs)
 if len(args.outputs) != len(args.inputs):
-    exit('Wrong number of output paths.')
+    sys.exit('Wrong number of output paths.')
 renamed = {}
 if args.renamed is not None:
     renamed = {src: dst for src, dst in args.renamed}
