@@ -51,16 +51,17 @@ def decode_szs_node(out_path, node, retained, renamed):
         unpack = ext_unpack.get(ext)
         if unpack is None or in_data[0:4] != ext_magic[ext]:
             out_data = in_data
-            out_file = open(out_path, 'wb')
+            with open(out_path, 'wb') as out_file:
+                out_file.write(out_data)
         else:
             val = unpack(in_data)
             out_data = json5.dumps(val, indent = 4, quote_keys = True)
-            out_file = open(out_path + '.json5', 'w')
-        out_file.write(out_data)
+            with open(out_path + '.json5', 'w') as out_file:
+                out_file.write(out_data)
 
 def decode_szs(in_path, out_path, retained, renamed):
-    in_file = open(in_path, 'rb')
-    in_data = in_file.read()
+    with open(in_path, 'rb') as in_file:
+        in_data = in_file.read()
     magic = in_data[0:4]
     expected_magic = b'Yaz0'
     if magic != expected_magic:
@@ -81,8 +82,8 @@ def decode(in_path, out_path, retained, renamed):
     unpack = ext_unpack.get(ext)
     if unpack is None:
         exit(f'Unknown file format with extension {ext}.')
-    in_file = open(in_path, 'rb')
-    in_data = in_file.read()
+    with open(in_path, 'rb') as in_file:
+        in_data = in_file.read()
     magic = in_data[0:4]
     expected_magic = ext_magic[ext]
     if magic != expected_magic:
@@ -93,8 +94,8 @@ def decode(in_path, out_path, retained, renamed):
     out_data = json5.dumps(val, ensure_ascii = False, indent = 4, quote_keys = True)
     if out_path is None:
         out_path = in_path + '.json5'
-    out_file = open(out_path, 'w')
-    out_file.write(out_data)
+    with open(out_path, 'w') as out_file:
+        out_file.write(out_data)
 
 def encode_szs_node(in_path, retained, renamed):
     is_dir = os.path.isdir(in_path)
@@ -115,12 +116,12 @@ def encode_szs_node(in_path, retained, renamed):
         ext = parts[-2] if len(parts) >= 2 else None
         pack = ext_pack.get(ext)
         if pack is None:
-            in_file = open(in_path, 'rb')
-            out_data = in_file.read()
+            with open(in_path, 'rb') as in_file:
+                out_data = in_file.read()
             out_path = in_path
         else:
-            in_file = open(in_path, 'r', encoding='utf-8')
-            in_data = in_file.read()
+            with open(in_path, 'r', encoding = 'utf-8') as in_file:
+                in_data = in_file.read()
             val = json5.loads(in_data)
             out_data = pack(val)
             out_path = os.path.splitext(in_path)[0]
@@ -142,8 +143,8 @@ def encode_szs(in_path, out_path, retained, renamed):
     out_data = pack_yaz(out_data)
     if out_path is None:
         out_path = os.path.splitext(in_path)[0]
-    out_file = open(out_path, 'wb')
-    out_file.write(out_data)
+    with open(out_path, 'wb') as out_file:
+        out_file.write(out_data)
 
 def encode(in_path, out_path, retained, renamed):
     ext = in_path.split(os.extsep)[-2]
@@ -153,14 +154,14 @@ def encode(in_path, out_path, retained, renamed):
     pack = ext_pack.get(ext)
     if pack is None:
         exit(f'Unknown file format with binary extension {ext}.')
-    in_file = open(in_path, 'r', encoding='utf-8')
-    in_data = in_file.read()
+    with open(in_path, 'r', encoding='utf-8') as in_file:
+        in_data = in_file.read()
     val = json5.loads(in_data)
     out_data = pack(val)
     if out_path is None:
         out_path = os.path.splitext(in_path)[0]
-    out_file = open(out_path, 'wb')
-    out_file.write(out_data)
+    with open(out_path, 'wb') as out_file:
+        out_file.write(out_data)
 
 
 parser = ArgumentParser()
