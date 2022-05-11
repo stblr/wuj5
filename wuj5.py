@@ -69,7 +69,7 @@ def decode_u8(in_path, out_path, retained, renamed):
     ext = in_path.split(os.extsep)[-1]
     if ext != 'lzma':
         expected_magic = {
-            'u8': b'U\xaa8-',
+            'arc': b'U\xaa8-',
             'szs': b'Yaz0',
         }[ext]
         if magic != expected_magic:
@@ -88,7 +88,7 @@ def decode_u8(in_path, out_path, retained, renamed):
     decode_u8_node(out_path, root, retained, renamed)
 
 def decode(in_path, out_path, retained, renamed):
-    if in_path.endswith('.u8') or in_path.endswith('.szs') or in_path.endswith('.u8.lzma'):
+    if in_path.endswith('.arc') or in_path.endswith('.szs') or in_path.endswith('.arc.lzma'):
         decode_u8(in_path, out_path, retained, renamed)
         return
     ext = in_path.split(os.extsep)[-1]
@@ -166,7 +166,7 @@ def encode_u8(in_path, out_path, retained, renamed):
         out_file.write(out_data)
 
 def encode(in_path, out_path, retained, renamed):
-    if in_path.endswith('.u8.d') or in_path.endswith('.szs.d') or in_path.endswith('.u8.lzma.d'):
+    if in_path.endswith('.arc.d') or in_path.endswith('.szs.d') or in_path.endswith('.arc.lzma.d'):
         encode_u8(in_path, out_path, retained, renamed)
         return
     ext = in_path.split(os.extsep)[-2]
